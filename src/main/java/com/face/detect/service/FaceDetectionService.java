@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.face.detect.component.RestApiClient;
 import com.face.detect.constants.ImgTypeConstants;
 import com.face.detect.domain.ComparationResponse;
+import com.face.detect.domain.DetectionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -42,5 +44,21 @@ public class FaceDetectionService {
         }
 
         return 0F;
+    }
+
+    public String detectFace(String image) {
+        String response = restApiClient.detectFace(image, ImgTypeConstants.TYPE_IMG_URL);
+
+        if (StringUtils.isEmpty(response)) {
+            log.error("no response");
+            return null;
+        }
+
+        DetectionResponse detectionResponse = JSON.parseObject(response, DetectionResponse.class);
+        if (CollectionUtils.isEmpty(detectionResponse.getFaces())) {
+            return null;
+        }
+
+        return detectionResponse.getFaces().get(0).getFace_token();
     }
 }

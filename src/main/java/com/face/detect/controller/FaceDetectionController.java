@@ -19,8 +19,15 @@ public class FaceDetectionController {
 
     @ResponseBody
     @RequestMapping(value = "/compare", method = RequestMethod.POST)
-    public String compareToken(@RequestBody ComparationRequest comparationRequest) {
+    public String compareFaces(@RequestBody ComparationRequest comparationRequest) {
         float confidence = faceDetectionService.getMatchRate(comparationRequest.getImage1(), comparationRequest.getImage2());
         return "匹配程度：" + confidence;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/detect", method = RequestMethod.GET)
+    public String detectFace(@RequestParam String image) {
+        String faceToken = faceDetectionService.detectFace(image);
+        return "face token = " + faceToken;
     }
 }
